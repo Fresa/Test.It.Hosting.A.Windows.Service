@@ -1,4 +1,4 @@
-# Test.It.Hosting.A.Windows.Service
+# Test.It.While.Hosting.Your.Windows.Service
 A Testing framework that hosts your Windows Service during test execution and let you write BDD like test specifications. 
 
 ## Why?
@@ -21,21 +21,21 @@ So here we have two integration points:
 
 During a continues integration process, your build server probably runs tests. If it were to run an integration test, it would need to host the service and have control over a PostgreSQL and a RabbitMQ instance. These would be hard to control in an orderly fashion, specially during parallel testing. 
 
-In comes Test.It.Hosting.A.Windows.Service to save the day!
+In comes Test.It.While.Hosting.Your.Windows.Service to save the day!
 
 ## Download
-https://www.nuget.org/packages/Test.It.Hosting.A.Windows.Service/
+https://www.nuget.org/packages/Test.It.While.Hosting.Your.Windows.Service/
 
 ## Getting Started
 tl;dr:
-Runnable example available here: https://github.com/Fresa/Test.It.Hosting.A.Windows.Service/blob/master/tests/Test.It.Hosting.A.Windows.Service.Tests/When_testing_a_windows_service.cs
+Runnable example available here: https://github.com/Fresa/Test.It.While.Hosting.Your.Windows.Service/blob/master/tests/Test.It.While.Hosting.Your.Windows.Service.Tests/When_testing_a_windows_service.cs
 
 ### Setting Up Your First Test
 It all begins by you creating a test class which will inherit `WindowsServiceSpecification`. This specification defines how to configure, build, start and host your Windows Service and at the same time create a communication channel between your test and the hosted service and control the whole test process. All without forcing you into a certain test framework, ofcourse.
 
 The `WindowsServiceSpecification` requires an implementation of the `IWindowsServiceConfiguration` as generic parameter. You may roll your own configuration, or you can use the `DefaultWindowsServiceConfiguration` which will work in most cases. If you go for the latter it will need an application builder as generic parameter, i.e. you need to implement `IWindowsServiceBuilder`. `IWindowsServiceBuilder` will tell the hosting framework how to start your application. 
 
-You need to specify a test configurer in your implementation of the `IWindowsServiceBuilder`. The test configurer will let you reconfigure your application during startup so you can overwrite the 3rd party integration client registration for example. You will need an implementation of the `IServiceContainer` interface to achive this. I highly recommend using an IOC/DI container (my favorite is SimpleInjector, https://simpleinjector.org/), but you are free to roll your own service container, see [`SimpleServiceContainer`](https://github.com/Fresa/Test.It.Hosting.A.Windows.Service/blob/master/tests/Test.It.Hosting.A.Windows.Service.Tests/SimpleServiceContainer.cs).
+You need to specify a test configurer in your implementation of the `IWindowsServiceBuilder`. The test configurer will let you reconfigure your application during startup so you can overwrite the 3rd party integration client registration for example. You will need an implementation of the `IServiceContainer` interface to achive this. I highly recommend using an IOC/DI container (my favorite is SimpleInjector, https://simpleinjector.org/), but you are free to roll your own service container, see [`SimpleServiceContainer`](https://github.com/Fresa/Test.It.While.Hosting.Your.Windows.Service/blob/master/tests/Test.It.While.Hosting.Your.Windows.Service.Tests/SimpleServiceContainer.cs).
 
 Now, in your test, you will have a `Client` property available where you can control the service. It only exposes a `Disconnect` method, which you at most cases do not need to use, because the `WindowsServiceSpecification` will handle shutdown when your test has finished.
 
