@@ -1,6 +1,6 @@
-src/Test.It.Hosting.A.WindowsService/bin/
-src/Test.It.Hosting.A.WindowsService/obj/
-tests/Test.It.Hosting.A.WindowsService.Tests/obj/
-tests/Test.It.Hosting.A.WindowsService.Tests/bin/
+src/Test.It.While.Hosting.Your.Windows.Service/bin/
+src/Test.It.While.Hosting.Your.Windows.Service/obj/
+tests/Test.It.While.Hosting.Your.Windows.Service.Tests/obj/
+tests/Test.It.While.Hosting.Your.Windows.Service.Tests/bin/
 packages/
 !tools/**
