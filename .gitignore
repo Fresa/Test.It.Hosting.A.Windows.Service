@@ -1,0 +1,6 @@
+src/Test.It.Hosting.A.WindowsService/bin/
+src/Test.It.Hosting.A.WindowsService/obj/
+tests/Test.It.Hosting.A.WindowsService.Tests/obj/
+tests/Test.It.Hosting.A.WindowsService.Tests/bin/
+packages/
+!tools/**
