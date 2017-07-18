@@ -53,16 +53,16 @@
     <Compile Include="DefaultWIndowsServiceBuilder.cs" />
     <Compile Include="DefaultWindowsServiceClient.cs" />
     <Compile Include="DefaultWindowsServiceStarter.cs" />
-    <Compile Include="IConsoleApplicationBuilder.cs" />
+    <Compile Include="IWindowsServiceBuilder.cs" />
     <Compile Include="IWindowsServiceController.cs" />
-    <Compile Include="IWindowsServiceConfiguration.cs" />
+    <Compile Include="IWindowsServiceHostStarter.cs" />
     <Compile Include="IWindowsServiceClient.cs" />
     <Compile Include="IWindowsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DefaultWindowsServiceController.cs" />
     <Compile Include="WindowsServiceSpecification.cs" />
     <Compile Include="WindowsServiceTestServer.cs" />
-    <Compile Include="DefaultWindowsServiceConfiguration.cs" />
+    <Compile Include="DefaultWindowsServiceHostStarter.cs" />
     <Compile Include="WindowsServiceStarter.cs" />
   </ItemGroup>
   <ItemGroup>

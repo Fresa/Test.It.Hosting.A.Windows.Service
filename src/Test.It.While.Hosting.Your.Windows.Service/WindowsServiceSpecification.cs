@@ -5,8 +5,8 @@ using System.Threading;
 
 namespace Test.It.While.Hosting.Your.Windows.Service
 {
-    public abstract class WindowsServiceSpecification<TConfiguration> : IUseConfiguration<TConfiguration>
-        where TConfiguration : class, IWindowsServiceConfiguration, new()
+    public abstract class WindowsServiceSpecification<THostStarter> : IUseConfiguration<THostStarter>
+        where THostStarter : class, IWindowsServiceHostStarter, new()
     {
         private readonly AutoResetEvent _wait = new AutoResetEvent(false);
         private readonly List<Exception> _exceptions = new List<Exception>();
@@ -20,7 +20,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         /// Bootstraps and starts the hosted application.
         /// </summary>
         /// <param name="windowsServiceConfiguration">Windows service configuration</param>
-        public void SetConfiguration(TConfiguration windowsServiceConfiguration)
+        public void SetConfiguration(THostStarter windowsServiceConfiguration)
         {
             var controller = windowsServiceConfiguration.Start(new SimpleTestConfigurer(Given));
             Client = controller.Client;

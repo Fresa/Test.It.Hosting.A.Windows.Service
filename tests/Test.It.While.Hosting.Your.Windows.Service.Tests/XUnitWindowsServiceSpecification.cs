@@ -3,7 +3,7 @@ using System;
 namespace Test.It.While.Hosting.Your.Windows.Service.Tests
 {
     public abstract class XUnitWindowsServiceSpecification<TConfiguration> : WindowsServiceSpecification<TConfiguration>, IDisposable
-        where TConfiguration : class, IWindowsServiceConfiguration, new()
+        where TConfiguration : class, IWindowsServiceHostStarter, new()
     {
         private readonly TConfiguration _configuration;
 

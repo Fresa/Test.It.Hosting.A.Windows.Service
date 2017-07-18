@@ -2,7 +2,7 @@
 
 namespace Test.It.While.Hosting.Your.Windows.Service
 {
-    public class DefaultWindowsServiceConfiguration<TApplicationBuilder> : IWindowsServiceConfiguration 
+    public class DefaultWindowsServiceHostStarter<TApplicationBuilder> : IWindowsServiceHostStarter 
         where TApplicationBuilder : IWindowsServiceBuilder, new()
     {
         private WindowsServiceTestServer _server;

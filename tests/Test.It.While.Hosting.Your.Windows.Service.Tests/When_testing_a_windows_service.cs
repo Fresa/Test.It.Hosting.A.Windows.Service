@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Test.It.While.Hosting.Your.Windows.Service.Tests
 {
-    public class When_testing_a_windows_service : XUnitWindowsServiceSpecification<DefaultWindowsServiceConfiguration<TestWindowsServiceBuilder>>
+    public class When_testing_a_windows_service : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestWindowsServiceBuilder>>
     {
         private bool _started;
 
