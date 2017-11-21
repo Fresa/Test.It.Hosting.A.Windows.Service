@@ -2,7 +2,7 @@
 
 namespace Test.It.While.Hosting.Your.Windows.Service
 {
-    public interface IWindowsServiceClient
+    public interface IServiceController
     {
         /// <summary>
         /// Sends a stop command to the Windows Service.

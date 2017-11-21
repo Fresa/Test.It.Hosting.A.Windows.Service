@@ -5,7 +5,6 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
 {
     public class TestWindowsServiceApp
     {
-        private static TestWindowsServiceApp _app;
         private readonly SimpleServiceContainer _serviceContainer;
 
         public TestWindowsServiceApp(Action<IServiceContainer> reconfigurer)
@@ -29,10 +28,16 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
             return 0;
         }
 
+        public int Stop()
+        {
+            _serviceContainer.Dispose();
+            return 0;
+        }
+
         public static void Main(params string[] args)
         {
-            _app = new TestWindowsServiceApp(container => { });
-            _app.Start(args);
+            var app = new TestWindowsServiceApp(container => { });
+            app.Start(args);
         }
     }
 }

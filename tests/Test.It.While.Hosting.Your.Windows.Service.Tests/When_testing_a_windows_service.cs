@@ -22,6 +22,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
                 A.CallToSet(() => app.HaveStarted).To(true).Invokes(() =>
                 {
                     _started = true;
+                    ServiceController.Stop();
                 });
                 configurer.Register(() => app);
             }

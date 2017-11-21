@@ -52,8 +52,8 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         void RaiseException(Exception exception);
 
         /// <summary>
-        /// Channel to communicate with the Windows Service. Usually exposed to the test instance.
+        /// Service controller to communicate with the Windows Service. Usually exposed to the test instance.
         /// </summary>
-        IWindowsServiceClient Client { get; }
+        IServiceController ServiceController { get; }
     }
 }

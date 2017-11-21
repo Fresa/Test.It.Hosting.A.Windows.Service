@@ -2,11 +2,11 @@
 
 namespace Test.It.While.Hosting.Your.Windows.Service
 {
-    internal class DefaultWindowsServiceClient : IWindowsServiceClient
+    internal class DefaultServiceController : IServiceController
     {
         private readonly DefaultWindowsServiceController _controller;
 
-        public DefaultWindowsServiceClient(DefaultWindowsServiceController controller)
+        public DefaultServiceController(DefaultWindowsServiceController controller)
         {
             _controller = controller;
             _controller.OnStopped += OnStopped;

@@ -8,7 +8,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
     {
         public DefaultWindowsServiceController()
         {
-            Client = new DefaultWindowsServiceClient(this);
+            ServiceController = new DefaultServiceController(this);
         }
 
         private event StopHandler StopPrivate;
@@ -18,7 +18,6 @@ namespace Test.It.While.Hosting.Your.Windows.Service
             {
                 lock (_stopLock)
                 {
-                    value.Invoke();
                     StopPrivate += value;
                 }
             }
@@ -35,10 +34,6 @@ namespace Test.It.While.Hosting.Your.Windows.Service
 
         public void Stop()
         {
-            lock (_stoppedLock)
-            {
-                _stopped = true;
-            }
             StopPrivate?.Invoke();
         }
 
@@ -154,6 +149,6 @@ namespace Test.It.While.Hosting.Your.Windows.Service
             OnExceptionPrivate?.Invoke(exception);
         }
 
-        public IWindowsServiceClient Client { get; }
+        public IServiceController ServiceController { get; }
     }
 }

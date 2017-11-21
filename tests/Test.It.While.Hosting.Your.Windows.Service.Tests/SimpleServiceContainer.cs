@@ -58,6 +58,8 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
             {
                 disposable.Dispose();
             }
+
+            _dependencyResolver.Clear();
         }
     }
 }

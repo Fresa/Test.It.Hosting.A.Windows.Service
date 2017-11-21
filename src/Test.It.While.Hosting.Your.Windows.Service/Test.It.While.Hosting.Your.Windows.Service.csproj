@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultWIndowsServiceBuilder.cs" />
-    <Compile Include="DefaultWindowsServiceClient.cs" />
+    <Compile Include="DefaultServiceController.cs" />
     <Compile Include="DefaultWindowsServiceConfiguration.cs" />
     <Compile Include="DefaultWindowsServiceStarter.cs" />
     <Compile Include="Owin.cs" />
@@ -62,7 +62,7 @@
     <Compile Include="IWindowsServiceConfiguration.cs" />
     <Compile Include="IWindowsServiceController.cs" />
     <Compile Include="IWindowsServiceHostStarter.cs" />
-    <Compile Include="IWindowsServiceClient.cs" />
+    <Compile Include="IServiceController.cs" />
     <Compile Include="IWindowsService.cs" />
     <Compile Include="Delegates\ExceptionHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -37,7 +37,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         public void SetConfiguration(THostStarter windowsServiceConfiguration)
         {
             var controller = windowsServiceConfiguration.Start(new SimpleTestConfigurer(Given), StartParameters);
-            Client = controller.Client;
+            ServiceController = controller.ServiceController;
 
             controller.OnStopped += exitCode =>
             {
@@ -55,7 +55,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         {
             if (_wait.WaitOne(Timeout) == false)
             {
-                _exceptions.Add(new TimeoutException($"Waited {Timeout.Seconds} seconds."));
+                _exceptions.Add(new TimeoutException($"Waited {Timeout:mm\\:ss}."));
             }
 
             HandleExceptions();
@@ -83,18 +83,18 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         protected virtual string[] StartParameters { get; } = new string[0];
         
         /// <summary>
-        /// Client to communicate with the hosted windows service application.
+        /// Controller to communicate with the hosted windows service application.
         /// </summary>
-        protected IWindowsServiceClient Client { get; private set; }
+        protected IServiceController ServiceController { get; private set; }
 
         /// <summary>
-        /// OBS! <see cref="Client"/> is not ready here since the application is in bootstrapping phase where you control the service configuration.
+        /// OBS! <see cref="ServiceController"/> is not ready here since the application is in bootstrapping phase where you control the service configuration.
         /// </summary>
         /// <param name="configurer">Service container</param>
         protected virtual void Given(IServiceContainer configurer) { }
 
         /// <summary>
-        /// Application has started and is reachable through <see cref="Client"/>.
+        /// Application has started and is reachable through <see cref="ServiceController"/>.
         /// </summary>
         protected virtual void When() { }
     }
