@@ -25,8 +25,9 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
                 return _app.Start(args);
             }
 
-            public void Stop()
+            public int Stop()
             {
+                return 0;
             }
         }
     }

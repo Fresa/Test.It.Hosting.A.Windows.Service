@@ -1,10 +1,17 @@
-﻿namespace Test.It.While.Hosting.Your.Windows.Service
+﻿using Test.It.While.Hosting.Your.Windows.Service.Delegates;
+
+namespace Test.It.While.Hosting.Your.Windows.Service
 {
     public interface IWindowsServiceClient
     {
         /// <summary>
-        /// Sends a disconnect command to the Windows Service.
+        /// Sends a stop command to the Windows Service.
         /// </summary>
-        void Disconnect();
+        void Stop();
+
+        /// <summary>
+        /// Triggered when the Windows Service has stopped.
+        /// </summary>
+        event StoppedHandler OnStopped;
     }
 }

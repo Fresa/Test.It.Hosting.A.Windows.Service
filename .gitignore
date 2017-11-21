@@ -4,3 +4,6 @@ tests/Test.It.While.Hosting.Your.Windows.Service.Tests/obj/
 tests/Test.It.While.Hosting.Your.Windows.Service.Tests/bin/
 packages/
 !tools/**
+.vs/
+Test.It.While.Hosting.Your.Windows.Service.v3.ncrunchsolution
+tests/Test.It.While.Hosting.Your.Windows.Service.Tests/Test.It.While.Hosting.Your.Windows.Service.Tests.v3.ncrunchproject

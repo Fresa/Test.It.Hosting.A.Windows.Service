@@ -1,4 +1,6 @@
-﻿namespace Test.It.While.Hosting.Your.Windows.Service
+﻿using Test.It.While.Hosting.Your.Windows.Service.Delegates;
+
+namespace Test.It.While.Hosting.Your.Windows.Service
 {
     internal class DefaultWindowsServiceClient : IWindowsServiceClient
     {
@@ -7,11 +9,14 @@
         public DefaultWindowsServiceClient(DefaultWindowsServiceController controller)
         {
             _controller = controller;
+            _controller.OnStopped += OnStopped;
         }
 
-        public void Disconnect()
+        public void Stop()
         {
-            _controller.Disconnect();
+            _controller.Stop();
         }
+
+        public event StoppedHandler OnStopped;
     }
 }

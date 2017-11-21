@@ -7,10 +7,14 @@ namespace Test.It.While.Hosting.Your.Windows.Service
     {
         private WindowsServiceTestServer _server;
 
-        public IWindowsServiceController Start(ITestConfigurer testConfigurer)
+        public IWindowsServiceController Start(ITestConfigurer testConfigurer, params string[] startParameters)
         {
             var applicationBuilder = new TApplicationBuilder();
-            _server = WindowsServiceTestServer.Create(applicationBuilder.CreateWith(testConfigurer).Start);
+            _server = WindowsServiceTestServer
+                .Start(applicationBuilder
+                    .WithConfiguration(new DefaultWindowsServiceConfiguration(startParameters))
+                    .CreateWith(testConfigurer));
+
             return _server.Controller;
         }
 

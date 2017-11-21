@@ -16,7 +16,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
         public void Dispose()
         {
             _configuration.Dispose();
-            Client.Disconnect();
+            Client.Stop();
         }
     }
 }

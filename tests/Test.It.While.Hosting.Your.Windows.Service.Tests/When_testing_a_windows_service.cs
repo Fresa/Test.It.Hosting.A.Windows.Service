@@ -1,27 +1,36 @@
-﻿using FakeItEasy;
+﻿using System;
+using FakeItEasy;
 using Should.Fluent;
 using Xunit;
 
 namespace Test.It.While.Hosting.Your.Windows.Service.Tests
 {
-    public class When_testing_a_windows_service : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestWindowsServiceBuilder>>
+    namespace Given_a_windows_service
     {
-        private bool _started;
+        public class When_testing : XUnitWindowsServiceSpecification<
+            DefaultWindowsServiceHostStarter<TestWindowsServiceBuilder>>
+        {
+            private bool _started;
 
-        protected override void Given(IServiceContainer configurer)
-        {
-            var app = FakeItEasy.A.Fake<ITestApp>();
-            FakeItEasy.A.CallToSet(() => app.HaveStarted).To(true).Invokes(() =>
+            protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(4);
+
+            protected override string[] StartParameters { get; } = { "start" };
+
+            protected override void Given(IServiceContainer configurer)
             {
-                _started = true;
-            });
-            configurer.Register(() => app);
-        }
-        
-        [Fact]
-        public void It_should_have_started_the_app()
-        {
-            _started.Should().Be.True();
+                var app = A.Fake<ITestApp>();
+                A.CallToSet(() => app.HaveStarted).To(true).Invokes(() =>
+                {
+                    _started = true;
+                });
+                configurer.Register(() => app);
+            }
+
+            [Fact]
+            public void It_should_have_started_the_app()
+            {
+                _started.Should().Be.True();
+            }
         }
     }
 }

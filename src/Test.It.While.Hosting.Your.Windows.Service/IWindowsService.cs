@@ -12,6 +12,7 @@
         /// <summary>
         /// Stops the Windows Service.
         /// </summary>
-        void Stop();
+        /// <returns>Exit code</returns>
+        int Stop();
     }
 }

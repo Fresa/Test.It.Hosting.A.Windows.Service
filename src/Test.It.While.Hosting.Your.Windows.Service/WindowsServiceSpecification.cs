@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 
@@ -9,12 +9,26 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         where THostStarter : class, IWindowsServiceHostStarter, new()
     {
         private readonly AutoResetEvent _wait = new AutoResetEvent(false);
-        private readonly List<Exception> _exceptions = new List<Exception>();
+        private readonly ConcurrentBag<Exception> _exceptions = new ConcurrentBag<Exception>();
+
+        private void RegisterException(Exception exception)
+        {
+            if (!(exception is AggregateException aggregateException))
+            {
+                _exceptions.Add(exception);
+                return;
+            }
+
+            foreach (var innerException in aggregateException.InnerExceptions)
+            {
+                _exceptions.Add(innerException);
+            }
+        }
 
         /// <summary>
         /// Execution timeout. Defaults to 3 seconds.
         /// </summary>
-        protected TimeSpan Timeout { private get; set; } = TimeSpan.FromSeconds(3);
+        protected virtual TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(3);
 
         /// <summary>
         /// Bootstraps and starts the hosted application.
@@ -22,27 +36,15 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         /// <param name="windowsServiceConfiguration">Windows service configuration</param>
         public void SetConfiguration(THostStarter windowsServiceConfiguration)
         {
-            var controller = windowsServiceConfiguration.Start(new SimpleTestConfigurer(Given));
+            var controller = windowsServiceConfiguration.Start(new SimpleTestConfigurer(Given), StartParameters);
             Client = controller.Client;
 
-            controller.Disconnected += (sender, exitCode) =>
+            controller.OnStopped += exitCode =>
             {
                 _wait.Set();
             };
-            controller.OnException += (sender, exception) =>
-            {
-                var aggregateException = exception as AggregateException;
-                if (aggregateException == null)
-                {
-                    _exceptions.Add(exception);
-                    return;
-                }
 
-                foreach (var innerException in aggregateException.InnerExceptions)
-                {
-                    _exceptions.Add(innerException);
-                }
-            };
+            controller.OnException += RegisterException;
 
             When();
 
@@ -53,7 +55,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         {
             if (_wait.WaitOne(Timeout) == false)
             {
-                throw new TimeoutException($"Waited {Timeout.Seconds} seconds.");
+                _exceptions.Add(new TimeoutException($"Waited {Timeout.Seconds} seconds."));
             }
 
             HandleExceptions();
@@ -75,6 +77,12 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         }
 
         /// <summary>
+        /// Defines the start parameters that will be used to bootstrap the application.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string[] StartParameters { get; } = new string[0];
+        
+        /// <summary>
         /// Client to communicate with the hosted windows service application.
         /// </summary>
         protected IWindowsServiceClient Client { get; private set; }
@@ -86,7 +94,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         protected virtual void Given(IServiceContainer configurer) { }
 
         /// <summary>
-        /// Application has started, and is reachable through <see cref="Client"/>.
+        /// Application has started and is reachable through <see cref="Client"/>.
         /// </summary>
         protected virtual void When() { }
     }

@@ -9,7 +9,8 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         /// Starts the hosting process.
         /// </summary>
         /// <param name="testConfigurer">Test Configurer for the application</param>
+        /// <param name="startParameters">Start parameters for the application</param>
         /// <returns>Windows Service Controller</returns>
-        IWindowsServiceController Start(ITestConfigurer testConfigurer);
+        IWindowsServiceController Start(ITestConfigurer testConfigurer, params string[] startParameters);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Test.It.While.Hosting.Your.Windows.Service.Tests
 {
@@ -18,6 +19,11 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
 
         public int Start(params string[] args)
         {
+            if (args.Any(s => s != "start"))
+            {
+                throw new Exception("No signal for start.");
+            }
+
             var app = _serviceContainer.Resolve<ITestApp>();
             app.HaveStarted = true;
             return 0;
