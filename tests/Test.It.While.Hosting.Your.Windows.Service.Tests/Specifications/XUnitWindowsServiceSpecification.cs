@@ -1,6 +1,6 @@
 using System;
 
-namespace Test.It.While.Hosting.Your.Windows.Service.Tests
+namespace Test.It.While.Hosting.Your.Windows.Service.Tests.Specifications
 {
     public abstract class XUnitWindowsServiceSpecification<TConfiguration> : WindowsServiceSpecification<TConfiguration>, IDisposable
         where TConfiguration : class, IWindowsServiceHostStarter, new()

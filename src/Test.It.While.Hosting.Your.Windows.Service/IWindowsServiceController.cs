@@ -41,9 +41,9 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         void Stopped(int exitCode);
 
         /// <summary>
-        /// Triggered when an exception is raised.
+        /// Triggered when an unhandled exception is raised.
         /// </summary>
-        event ExceptionHandler OnException;
+        event ExceptionHandler OnUnhandledException;
 
         /// <summary>
         /// Raises an exception. 

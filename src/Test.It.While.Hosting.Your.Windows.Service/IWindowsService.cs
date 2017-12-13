@@ -1,4 +1,6 @@
-﻿namespace Test.It.While.Hosting.Your.Windows.Service
+﻿using System;
+
+namespace Test.It.While.Hosting.Your.Windows.Service
 {
     public interface IWindowsService
     {
@@ -14,5 +16,10 @@
         /// </summary>
         /// <returns>Exit code</returns>
         int Stop();
+
+        /// <summary>
+        /// Unhandled exception event
+        /// </summary>
+        event Action<Exception> OnUnhandledException;
     }
 }

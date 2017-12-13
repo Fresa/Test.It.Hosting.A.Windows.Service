@@ -64,14 +64,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ITestApp.cs" />
+    <Compile Include="Specifications\ExceptionSupressingServiceSpecification.cs" />
+    <Compile Include="ApplicationBuilders\FailingOnStopWindowsServiceBuilder.cs" />
+    <Compile Include="Applications\IApplicationStatusReporter.cs" />
+    <Compile Include="ApplicationBuilders\EmptyWindowsServiceBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleServiceContainer.cs" />
-    <Compile Include="TestApp.cs" />
-    <Compile Include="TestWindowsServiceApp.cs" />
-    <Compile Include="TestWindowsServiceBuilder.cs" />
+    <Compile Include="Applications\ApplicationStatusReporter.cs" />
+    <Compile Include="Applications\TestWindowsServiceApp.cs" />
+    <Compile Include="ApplicationBuilders\TestWindowsServiceBuilder.cs" />
     <Compile Include="When_testing_a_windows_service.cs" />
-    <Compile Include="XUnitWindowsServiceSpecification.cs" />
+    <Compile Include="ApplicationBuilders\FailingOnStartWindowsServiceBuilder.cs" />
+    <Compile Include="Specifications\XUnitWindowsServiceSpecification.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

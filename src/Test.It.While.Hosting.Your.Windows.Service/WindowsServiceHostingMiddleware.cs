@@ -22,24 +22,37 @@ namespace Test.It.While.Hosting.Your.Windows.Service
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            _controller.OnStop += Stop;
+            _controller.OnStop += () =>
+            {
+                Task.Run(() =>
+                {
+                    _service.OnUnhandledException -= OnUnhandledException;
+
+                    var exitCode = _service.Stop();
+                    _controller.Stopped(exitCode);
+                }).ContinueWith(task =>
+                {
+                    _controller.RaiseException(task.Exception);
+                }, TaskContinuationOptions.OnlyOnFaulted);
+            };
 
             await Task.Run(() =>
             {
-                var startParms = environment[Owin.StartParameters] as string[] ?? new string[0];
+                var startParameters = environment[Owin.StartParameters] as string[] ?? new string[0];
 
-                var startCode = _service.Start(startParms);
+                var startCode = _service.Start(startParameters);
                 _controller.Started(startCode);
+
+                _service.OnUnhandledException += OnUnhandledException;
             }).ContinueWith(task =>
             {
                 _controller.RaiseException(task.Exception);
             }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        private void Stop()
+        private void OnUnhandledException(Exception exception)
         {
-            var exitCode = _service.Stop();
-            _controller.Stopped(exitCode);
+            _controller.RaiseException(exception);
         }
     }
 }

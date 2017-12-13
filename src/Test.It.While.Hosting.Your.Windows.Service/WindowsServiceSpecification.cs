@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 
 namespace Test.It.While.Hosting.Your.Windows.Service
@@ -44,7 +45,11 @@ namespace Test.It.While.Hosting.Your.Windows.Service
                 _wait.Set();
             };
 
-            controller.OnException += RegisterException;
+            controller.OnUnhandledException += exception =>
+            {
+                RegisterException(exception);
+                _wait.Set();
+            };
 
             When();
 
@@ -70,7 +75,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
 
             if (_exceptions.Count == 1)
             {
-                throw _exceptions.First();
+                ExceptionDispatchInfo.Capture(_exceptions.First()).Throw();
             }
 
             throw new AggregateException(_exceptions);

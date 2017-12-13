@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Test.It.While.Hosting.Your.Windows.Service.Tests
+namespace Test.It.While.Hosting.Your.Windows.Service.Tests.Applications
 {
     public class TestWindowsServiceApp
     {
@@ -10,7 +10,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
         public TestWindowsServiceApp(Action<IServiceContainer> reconfigurer)
         {
             _serviceContainer = new SimpleServiceContainer();
-            _serviceContainer.RegisterSingleton<ITestApp>(() => new TestApp());
+            _serviceContainer.RegisterSingleton<IApplicationStatusReporter>(() => new ApplicationStatusReporter());
 
             reconfigurer(_serviceContainer);
             _serviceContainer.Verify();
@@ -20,11 +20,11 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
         {
             if (args.Any(s => s != "start"))
             {
-                throw new Exception("No signal for start.");
+                throw new Exception("Missing start argument.");
             }
 
-            var app = _serviceContainer.Resolve<ITestApp>();
-            app.HaveStarted = true;
+            var applicationStatusReporter = _serviceContainer.Resolve<IApplicationStatusReporter>();
+            applicationStatusReporter.HaveStarted = true;
             return 0;
         }
 

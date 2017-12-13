@@ -118,7 +118,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         private readonly List<Exception> _exceptionsRaised = new List<Exception>();
         private readonly object _exceptionLock = new object();
         private event ExceptionHandler OnExceptionPrivate;
-        public event ExceptionHandler OnException
+        public event ExceptionHandler OnUnhandledException
         {
             add
             {
