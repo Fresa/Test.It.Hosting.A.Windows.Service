@@ -9,7 +9,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         public DefaultServiceController(DefaultWindowsServiceController controller)
         {
             _controller = controller;
-            _controller.OnStopped += OnStopped;
+            _controller.OnStopped += code => OnStopped?.Invoke(code);
         }
 
         public void Stop()

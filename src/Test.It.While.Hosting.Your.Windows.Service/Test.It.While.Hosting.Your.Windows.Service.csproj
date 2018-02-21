@@ -55,6 +55,7 @@
     <Compile Include="DefaultServiceController.cs" />
     <Compile Include="DefaultWindowsServiceConfiguration.cs" />
     <Compile Include="DefaultWindowsServiceStarter.cs" />
+    <Compile Include="NotStartedController.cs" />
     <Compile Include="Owin.cs" />
     <Compile Include="Delegates\StartedHandler.cs" />
     <Compile Include="Delegates\StopHandler.cs" />

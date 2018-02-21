@@ -15,6 +15,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
         public class When_testing : XUnitWindowsServiceSpecification<DefaultWindowsServiceHostStarter<TestWindowsServiceBuilder>>
         {
             private bool _started;
+            private int _exitCode;
 
             protected override TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(4);
 
@@ -29,12 +30,23 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
                     ServiceController.Stop();
                 });
                 configurer.Register(() => applicationStatusReporter);
+
+                ServiceController.OnStopped += code =>
+                {
+                    _exitCode = code;
+                };
             }
 
             [Fact]
             public void It_should_have_started_the_app()
             {
                 _started.Should().Be.True();
+            }
+
+            [Fact]
+            public void It_should_have_reported_the_exit_code()
+            {
+                _exitCode.Should().Equal(5);
             }
         }
     }

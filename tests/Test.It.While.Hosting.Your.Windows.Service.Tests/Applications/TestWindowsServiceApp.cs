@@ -31,7 +31,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests.Applications
         public int Stop()
         {
             _serviceContainer.Dispose();
-            return 0;
+            return 5;
         }
 
         public static void Main(params string[] args)

@@ -9,6 +9,11 @@ namespace Test.It.While.Hosting.Your.Windows.Service
     public abstract class WindowsServiceSpecification<THostStarter> : IUseConfiguration<THostStarter>
         where THostStarter : class, IWindowsServiceHostStarter, new()
     {
+        protected WindowsServiceSpecification()
+        {
+            ServiceController = _notStartedController;
+        }
+
         private readonly AutoResetEvent _wait = new AutoResetEvent(false);
         private readonly ConcurrentBag<Exception> _exceptions = new ConcurrentBag<Exception>();
 
@@ -38,10 +43,12 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         public void SetConfiguration(THostStarter windowsServiceConfiguration)
         {
             var controller = windowsServiceConfiguration.Start(new SimpleTestConfigurer(Given), StartParameters);
+            
             ServiceController = controller.ServiceController;
 
             controller.OnStopped += exitCode =>
             {
+                _notStartedController.InvokeOnStopped(exitCode);
                 _wait.Set();
             };
 
@@ -87,6 +94,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         /// <returns></returns>
         protected virtual string[] StartParameters { get; } = new string[0];
         
+        private readonly NotStartedController _notStartedController = new NotStartedController();
         /// <summary>
         /// Controller to communicate with the hosted windows service application.
         /// </summary>
@@ -99,7 +107,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         protected virtual void Given(IServiceContainer configurer) { }
 
         /// <summary>
-        /// Application has started and is reachable through <see cref="ServiceController"/>.
+        /// Application has started and is controlable through <see cref="ServiceController"/>.
         /// </summary>
         protected virtual void When() { }
     }
