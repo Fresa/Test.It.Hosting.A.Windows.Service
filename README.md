@@ -1,6 +1,10 @@
 # Test.It.While.Hosting.Your.Windows.Service
 A Testing framework that hosts your Windows Service during test execution and let you write BDD like test specifications. 
 
+[![Build status](https://ci.appveyor.com/api/projects/status/1wt1duwbn6kh3yn7?svg=true)](https://ci.appveyor.com/project/Fresa/test-it-while-hosting-your-windows-service)
+
+[![Build history](https://buildstats.info/appveyor/chart/Fresa/test-it-while-hosting-your-windows-service)](https://ci.appveyor.com/project/Fresa/test-it-while-hosting-your-windows-service/history)
+
 ## Why?
 This library helps you simplify writing integration tests for your Windows Service. It will bootstrap, start and host your Windows Service in memory while giving you handles to interact with the service making it possible to mock integration points to isolate the service during testing. This way you are no longer dependent on 3rd party installations when you run your application, and you no longer need to do tricky cleanup sessions before and after your tests, everything is done in memory and erased as soon as the test finishes.
 
@@ -25,6 +29,8 @@ In comes Test.It.While.Hosting.Your.Windows.Service to save the day!
 
 ## Download
 https://www.nuget.org/packages/Test.It.While.Hosting.Your.Windows.Service/
+
+[![NuGet Badge](https://buildstats.info/nuget/Test.It.While.Hosting.Your.Windows.Service)](https://www.nuget.org/packages/Test.It.While.Hosting.Your.Windows.Service/)
 
 ## Release Notes
 **1.1.0** Changed the definition and name of the IWindowsServiceConfiguration to IWindowsServiceHostStarter
