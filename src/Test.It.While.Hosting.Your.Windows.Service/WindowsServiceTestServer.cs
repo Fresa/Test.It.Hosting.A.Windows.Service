@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Owin.Builder;
 using Test.It.Starters;
 
 namespace Test.It.While.Hosting.Your.Windows.Service
@@ -8,7 +7,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
     {
         private WindowsServiceTestServer(IApplicationStarter<IWindowsServiceController> applicationStarter)
         {
-            var appBuilder = new AppBuilder();
+            var appBuilder = new DefaultApplicationBuilder();
             var builder = new ControllerProvidingAppBuilder<IWindowsServiceController>(appBuilder);
             var environment = applicationStarter.Start(builder);
             Controller = builder.Controller;

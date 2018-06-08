@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Test.It.While.Hosting.Your.Windows.Service
 {
-    internal class WindowsServiceHostingMiddleware
+    internal class WindowsServiceHostingMiddleware : IMiddleware
     {
         private readonly IWindowsService _service;
         private readonly IWindowsServiceController _controller;

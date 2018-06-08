@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Test.It.AppBuilders;
+using Test.It.ApplicationBuilders;
 using Test.It.Starters;
 
 namespace Test.It.While.Hosting.Your.Windows.Service
@@ -13,7 +13,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
 
         protected abstract IDictionary<string, object> Environment { get; }
 
-        public virtual IDictionary<string, object> Start(IAppBuilder<TClient> applicationBuilder)
+        public virtual IDictionary<string, object> Start(IApplicationBuilder<TClient> applicationBuilder)
         {
             applicationBuilder.WithController(Client).Use(new WindowsServiceHostingMiddleware(WindowsService, Client));
             return Environment;
