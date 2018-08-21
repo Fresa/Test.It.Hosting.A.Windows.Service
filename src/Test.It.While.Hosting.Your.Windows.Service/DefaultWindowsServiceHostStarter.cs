@@ -1,4 +1,5 @@
-﻿using Test.It.Specifications;
+﻿using System.Threading.Tasks;
+using Test.It.Specifications;
 
 namespace Test.It.While.Hosting.Your.Windows.Service
 {
@@ -6,21 +7,29 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         where TApplicationBuilder : IWindowsServiceBuilder, new()
     {
         private WindowsServiceTestServer _server;
+        private ITestConfigurer _testConfigurer;
+        private TApplicationBuilder _applicationBuilder;
 
-        public IWindowsServiceController Start(ITestConfigurer testConfigurer, params string[] startParameters)
+        public IWindowsServiceController Create(ITestConfigurer testConfigurer, params string[] startParameters)
         {
-            var applicationBuilder = new TApplicationBuilder();
-            _server = WindowsServiceTestServer
-                .Start(applicationBuilder
-                    .WithConfiguration(new DefaultWindowsServiceConfiguration(startParameters))
-                    .CreateWith(testConfigurer));
+            _applicationBuilder = new TApplicationBuilder();
 
+            _testConfigurer = testConfigurer;
+            _server = WindowsServiceTestServer
+                .Create(_applicationBuilder
+                    .WithConfiguration(new DefaultWindowsServiceConfiguration(startParameters))
+                    .CreateWith(_testConfigurer));
             return _server.Controller;
         }
 
         public void Dispose()
         {
             _server?.Dispose();
+        }
+
+        public async Task StartAsync()
+        {
+            await _server.StartAsync();
         }
     }
 }

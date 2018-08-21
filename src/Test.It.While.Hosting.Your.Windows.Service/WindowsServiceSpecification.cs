@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Test.It.While.Hosting.Your.Windows.Service
 {
@@ -36,14 +37,18 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         /// </summary>
         protected virtual TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(3);
 
+        [Obsolete("Use " + nameof(SetConfigurationAsync) + ". This method will be removed.")]
+        public void SetConfiguration(THostStarter windowsServiceConfiguration) 
+            => SetConfigurationAsync(windowsServiceConfiguration).Wait();
+
         /// <summary>
         /// Bootstraps and starts the hosted application.
         /// </summary>
-        /// <param name="windowsServiceConfiguration">Windows service configuration</param>
-        public void SetConfiguration(THostStarter windowsServiceConfiguration)
+        /// <param name="hostStarter">Windows service configuration</param>
+        public async Task SetConfigurationAsync(THostStarter hostStarter)
         {
-            var controller = windowsServiceConfiguration.Start(new SimpleTestConfigurer(Given), StartParameters);
-            
+            var controller = hostStarter.Create(new SimpleTestConfigurer(Given), StartParameters);
+
             ServiceController = controller.ServiceController;
 
             controller.OnStopped += exitCode =>
@@ -57,6 +62,14 @@ namespace Test.It.While.Hosting.Your.Windows.Service
                 RegisterException(exception);
                 _wait.Set();
             };
+
+            try
+            {
+                await hostStarter.StartAsync();
+            }
+            catch
+            {
+            }
 
             When();
 
@@ -93,7 +106,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         /// </summary>
         /// <returns></returns>
         protected virtual string[] StartParameters { get; } = new string[0];
-        
+
         private readonly NotStartedController _notStartedController = new NotStartedController();
         /// <summary>
         /// Controller to communicate with the hosted windows service application.

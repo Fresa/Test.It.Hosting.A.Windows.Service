@@ -1,30 +1,28 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace Test.It.While.Hosting.Your.Windows.Service.Tests.Specifications
 {
-    public abstract class ExceptionSupressingServiceSpecification<TConfiguration> : WindowsServiceSpecification<TConfiguration>, IDisposable
+    public abstract class ExceptionSupressingServiceSpecification<TConfiguration> : WindowsServiceSpecification<TConfiguration>, IAsyncLifetime
         where TConfiguration : class, IWindowsServiceHostStarter, new()
     {
-        private readonly TConfiguration _configuration;
-        
-        protected ExceptionSupressingServiceSpecification()
-        {
-            _configuration = new TConfiguration();
-            try
-            {
-                SetConfiguration(_configuration);
-            }
-            catch (Exception exception)
-            {
-                OnException(exception);
-            }
-        }
+        private TConfiguration _configuration;
 
         protected abstract void OnException(Exception exception);
 
-        public void Dispose()
+        public async Task InitializeAsync()
+        {
+            _configuration = new TConfiguration();
+            await SetConfigurationAsync(_configuration)
+                .ContinueWith(task => task.Exception?.Flatten().InnerExceptions.ToList().ForEach(OnException));
+        }
+
+        public Task DisposeAsync()
         {
             _configuration.Dispose();
+            return Task.CompletedTask;
         }
     }
 }
