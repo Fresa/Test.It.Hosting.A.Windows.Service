@@ -38,7 +38,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         protected virtual TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(3);
 
         [Obsolete("Use " + nameof(SetConfigurationAsync) + ". This method will be removed.")]
-        public void SetConfiguration(THostStarter windowsServiceConfiguration) 
+        public void SetConfiguration(THostStarter windowsServiceConfiguration)
             => SetConfigurationAsync(windowsServiceConfiguration).Wait();
 
         /// <summary>
@@ -63,13 +63,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
                 _wait.Set();
             };
 
-            try
-            {
-                await hostStarter.StartAsync();
-            }
-            catch
-            {
-            }
+            await hostStarter.StartAsync();
 
             When();
 

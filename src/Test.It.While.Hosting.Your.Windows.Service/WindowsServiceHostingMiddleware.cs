@@ -8,6 +8,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
     {
         private readonly IWindowsService _service;
         private readonly IWindowsServiceController _controller;
+        private Func<IDictionary<string, object>, Task> _next;
 
         public WindowsServiceHostingMiddleware(IWindowsService service, IWindowsServiceController controller)
         {
@@ -17,37 +18,50 @@ namespace Test.It.While.Hosting.Your.Windows.Service
 
         public void Initialize(Func<IDictionary<string, object>, Task> next)
         {
-
+            _next = next;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            _controller.OnStop += () =>
+            _controller.OnStop += async () =>
             {
-                Task.Run(() =>
+                try
                 {
-                    _service.OnUnhandledException -= OnUnhandledException;
+                    await Task.Run(() =>
+                    {
+                        var exitCode = _service.Stop();
 
-                    var exitCode = _service.Stop();
-                    _controller.Stopped(exitCode);
-                }).ContinueWith(task =>
+                        _service.OnUnhandledException -= OnUnhandledException;
+                        _controller.Stopped(exitCode);
+                    });
+                }
+                catch (Exception exception)
                 {
-                    _controller.RaiseException(task.Exception);
-                }, TaskContinuationOptions.OnlyOnFaulted);
+                    OnUnhandledException(exception);
+                }
             };
 
-            await Task.Run(() =>
+            try
             {
-                var startParameters = environment[Owin.StartParameters] as string[] ?? new string[0];
+                await Task.Run(() =>
+                {
+                    var startParameters = environment[Owin.StartParameters] as string[] ?? new string[0];
 
-                var startCode = _service.Start(startParameters);
-                _controller.Started(startCode);
+                    _service.OnUnhandledException += OnUnhandledException;
 
-                _service.OnUnhandledException += OnUnhandledException;
-            }).ContinueWith(task =>
+                    var startCode = _service.Start(startParameters);
+                    _controller.Started(startCode);
+                });
+            }
+            catch (Exception exception)
             {
-                _controller.RaiseException(task.Exception);
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                OnUnhandledException(exception);
+            }
+
+            if (_next != null)
+            {
+                await _next.Invoke(environment);
+            }
         }
 
         private void OnUnhandledException(Exception exception)
