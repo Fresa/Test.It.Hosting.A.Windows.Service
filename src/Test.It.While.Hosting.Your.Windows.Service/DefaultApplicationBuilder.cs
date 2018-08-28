@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
 {
     internal class DefaultApplicationBuilder : IApplicationBuilder
     {
-        private readonly Queue<IMiddleware> _middlewares = new Queue<IMiddleware>();
+        private readonly ConcurrentQueue<IMiddleware> _middlewares = new ConcurrentQueue<IMiddleware>();
 
         public Func<IDictionary<string, object>, Task> Build()
         {
@@ -20,17 +21,16 @@ namespace Test.It.While.Hosting.Your.Windows.Service
             return Builder;
         }
 
-        private Task Builder(IDictionary<string, object> environment)
+        private async Task Builder(IDictionary<string, object> environment)
         {
-            if (_middlewares.Any() == false)
+            if (_middlewares.TryDequeue(out var nextMiddleware) == false)
             {
-                return Task.CompletedTask;
+                return;
             }
 
-            var nextMiddleware = _middlewares.Dequeue();
             nextMiddleware.Initialize(Builder);
 
-            return nextMiddleware.Invoke(environment);
+            await nextMiddleware.Invoke(environment);
         }
 
         public void Use(IMiddleware middleware)
