@@ -15,11 +15,16 @@ namespace Test.It.While.Hosting.Your.Windows.Service
             ServiceController = _notStartedController;
         }
 
-        private readonly AutoResetEvent _wait = new AutoResetEvent(false);
+        private readonly SemaphoreSlim _wait = new SemaphoreSlim(0, 1);
         private readonly ConcurrentBag<Exception> _exceptions = new ConcurrentBag<Exception>();
 
         private void RegisterException(Exception exception)
         {
+            if (_exceptions.Contains(exception))
+            {
+                return;
+            }
+
             if (!(exception is AggregateException aggregateException))
             {
                 _exceptions.Add(exception);
@@ -54,25 +59,25 @@ namespace Test.It.While.Hosting.Your.Windows.Service
             controller.OnStopped += exitCode =>
             {
                 _notStartedController.InvokeOnStopped(exitCode);
-                _wait.Set();
+                _wait.Release();
             };
 
             controller.OnUnhandledException += exception =>
             {
                 RegisterException(exception);
-                _wait.Set();
+                _wait.Release();
             };
 
             await hostStarter.StartAsync();
 
             When();
 
-            Wait();
+            await WaitAsync();
         }
 
-        private void Wait()
+        private async Task WaitAsync()
         {
-            if (_wait.WaitOne(Timeout) == false)
+            if (await _wait.WaitAsync(Timeout) == false)
             {
                 _exceptions.Add(new TimeoutException($"Waited {Timeout:mm\\:ss}."));
             }
