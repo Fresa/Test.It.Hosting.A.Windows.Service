@@ -20,7 +20,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests.ApplicationBuilders
 
             public int Stop()
             {
-                Thread.Sleep(100);
+                Thread.Sleep(10000);
                 return 0;
             }
 
