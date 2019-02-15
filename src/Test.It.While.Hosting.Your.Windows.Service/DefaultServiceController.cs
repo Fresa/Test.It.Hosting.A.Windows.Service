@@ -10,6 +10,7 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         {
             _controller = controller;
             _controller.OnStopped += code => OnStopped?.Invoke(code);
+            _controller.OnStop += () => OnStop?.Invoke();
         }
 
         public void Stop()
@@ -18,5 +19,6 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         }
 
         public event StoppedHandler OnStopped;
+        public event StopHandler OnStop;
     }
 }

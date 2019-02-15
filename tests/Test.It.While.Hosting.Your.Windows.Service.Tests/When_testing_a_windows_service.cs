@@ -109,6 +109,32 @@ namespace Test.It.While.Hosting.Your.Windows.Service.Tests
             {
                 _exceptionsCaught.Should().Count.One();
                 _exceptionsCaught.OfType<TimeoutException>().Should().Count.One();
+                _exceptionsCaught.OfType<TimeoutException>().First().Message.Should().Contain("stop ");
+            }
+
+            protected override void OnException(Exception exception)
+            {
+                _exceptionsCaught.Add(exception);
+            }
+        }
+
+        public class When_stopping : ExceptionSupressingServiceSpecification<DefaultWindowsServiceHostStarter<SlowStoppingWindowsServiceBuilder>>
+        {
+            private readonly List<Exception> _exceptionsCaught = new List<Exception>();
+
+            protected override TimeSpan StopTimeout { get; set; } = TimeSpan.FromMilliseconds(1);
+
+            protected override void When()
+            {
+                ServiceController.Stop();
+            }
+
+            [Fact]
+            public void It_should_have_gotten_an_exception()
+            {
+                _exceptionsCaught.Should().Count.One();
+                _exceptionsCaught.OfType<TimeoutException>().Should().Count.One();
+                _exceptionsCaught.OfType<TimeoutException>().First().Message.Should().Contain("stopped ");
             }
 
             protected override void OnException(Exception exception)

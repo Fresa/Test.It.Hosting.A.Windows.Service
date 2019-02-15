@@ -15,7 +15,8 @@ namespace Test.It.While.Hosting.Your.Windows.Service
             ServiceController = _notStartedController;
         }
 
-        private readonly SemaphoreSlim _wait = new SemaphoreSlim(0, 1);
+        private readonly SemaphoreSlim _waitForStop = new SemaphoreSlim(0, 1);
+        private readonly SemaphoreSlim _waitForStopped = new SemaphoreSlim(0, 1);
         private readonly ConcurrentBag<Exception> _exceptions = new ConcurrentBag<Exception>();
 
         private void RegisterException(Exception exception)
@@ -42,6 +43,11 @@ namespace Test.It.While.Hosting.Your.Windows.Service
         /// </summary>
         protected virtual TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(3);
 
+        /// <summary>
+        /// Application stop timeout. Defaults to 3 seconds.
+        /// </summary>
+        protected virtual TimeSpan StopTimeout { get; set; } = TimeSpan.FromSeconds(3);
+
         [Obsolete("Use " + nameof(SetConfigurationAsync) + ". This method will be removed.")]
         public void SetConfiguration(THostStarter windowsServiceConfiguration)
             => SetConfigurationAsync(windowsServiceConfiguration).Wait();
@@ -59,27 +65,48 @@ namespace Test.It.While.Hosting.Your.Windows.Service
             controller.OnStopped += exitCode =>
             {
                 _notStartedController.InvokeOnStopped(exitCode);
-                _wait.Release();
+                _waitForStopped.Release();
             };
 
+            controller.OnStop += () =>
+            {
+                _waitForStop.Release();
+            };
+            
             controller.OnUnhandledException += exception =>
             {
                 RegisterException(exception);
-                _wait.Release();
+                _waitForStop.Release();
+                _waitForStopped.Release();
             };
 
             await hostStarter.StartAsync();
 
             When();
 
-            await WaitAsync();
+            await WaitForStopAsync();
+            await WaitForStoppedAsync();
         }
 
-        private async Task WaitAsync()
+        private async Task WaitForStoppedAsync()
         {
-            if (await _wait.WaitAsync(Timeout) == false)
+            var start = DateTime.Now;
+            if (await _waitForStopped.WaitAsync(StopTimeout) == false)
             {
-                _exceptions.Add(new TimeoutException($"Waited {Timeout:mm\\:ss}."));
+                var stop = DateTime.Now;
+                _exceptions.Add(new TimeoutException($"Waited {StopTimeout:mm\\:ss} for stopped signal. {start:HH:mm:ss.fff}->{stop:HH:mm:ss.fff}"));
+            }
+
+            HandleExceptions();
+        }
+
+        private async Task WaitForStopAsync()
+        {
+            var start = DateTime.Now;
+            if (await _waitForStop.WaitAsync(Timeout) == false)
+            {
+                var stop = DateTime.Now;
+                _exceptions.Add(new TimeoutException($"Waited {Timeout:mm\\:ss} for stop signal. {start:HH:mm:ss.fff}->{stop:HH:mm:ss.fff}"));
             }
 
             HandleExceptions();
